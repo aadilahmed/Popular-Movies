@@ -21,8 +21,4 @@ public class JsonUtils {
 
         return movies;
     }
-
-    public static String getImagePath(JSONObject movies) throws JSONException {
-        return movies.getString("backdrop_path");
-    }
 }
