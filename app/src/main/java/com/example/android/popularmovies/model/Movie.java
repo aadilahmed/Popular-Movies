@@ -22,7 +22,7 @@ public class Movie {
         this.releaseDate = movieObject.getString("releaseDate");
     }
 
-    public ArrayList<Movie> toMovie(ArrayList<JSONObject> movies) throws JSONException {
+    public static ArrayList<Movie> toMovie(ArrayList<JSONObject> movies) throws JSONException {
         ArrayList<Movie> movieList = new ArrayList<>();
 
         for(int i = 0; i < movies.size(); i++) {

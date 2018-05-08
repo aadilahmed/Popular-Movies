@@ -10,18 +10,18 @@ import java.net.URL;
 import java.util.Scanner;
 
 public class NetworkUtils {
-    final static String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
-    final static String POPULAR_PARAM = "popular";
-    final static String RATING_PARAM = "rating";
+    private static final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
+    private static final String POPULAR_PARAM = "popular";
+    private static final String RATING_PARAM = "rating";
 
-    final static String MOVIE_POSTER_URL = "http://image.tmdb.org/t/p/";
-    final static String POSTER_SIZE = "w185";
+    private static final String MOVIE_POSTER_URL = "http://image.tmdb.org/t/p/";
+    private static final String POSTER_SIZE = "w185";
 
     // PUT API KEY HERE
-    final static String API_KEY = "";
-    final static String API_PATH = "?api_key=";
+    private static final String API_KEY = "";
+    private static final String API_PATH = "?api_key=";
 
-    public URL buildURL(){
+    public static URL buildURL(){
         String dbSearchQuery = "";
         String apiPath = "";
         String apiKey = "";

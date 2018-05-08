@@ -9,11 +9,11 @@ import java.util.List;
 
 public class JsonUtils {
 
-    public static List<JSONObject> parseMovieJson(String json) throws JSONException {
+    public static ArrayList<JSONObject> parseMovieJson(String json) throws JSONException {
         JSONObject movieList = new JSONObject(json);
 
         JSONArray movieDetailArray = movieList.getJSONArray("results");
-        List<JSONObject> movies = new ArrayList<>();
+        ArrayList<JSONObject> movies = new ArrayList<>();
 
         for(int i = 0; i < movieDetailArray.length(); i++) {
             movies.add(movieDetailArray.getJSONObject(i));
