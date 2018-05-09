@@ -2,11 +2,16 @@ package com.example.android.popularmovies.utils;
 
 import android.net.Uri;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class NetworkUtils {
@@ -20,17 +25,28 @@ public class NetworkUtils {
     // PUT API KEY HERE
     private static final String API_KEY = "";
     private static final String API_PATH = "?api_key=";
+    private static final String equals = "=";
+
+    public static ArrayList<JSONObject> parseMovieJson(String json) throws JSONException {
+        JSONObject movieList = new JSONObject(json);
+
+        JSONArray movieDetailArray = movieList.getJSONArray("results");
+        ArrayList<JSONObject> movies = new ArrayList<>();
+
+        for(int i = 0; i < movieDetailArray.length(); i++) {
+            movies.add(movieDetailArray.getJSONObject(i));
+        }
+
+        return movies;
+    }
 
     public static URL buildURL(){
-        String dbSearchQuery = "";
-        String apiPath = "";
-        String apiKey = "";
 
-        Uri uri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
-                .appendQueryParameter(POPULAR_PARAM, dbSearchQuery)
-                .appendQueryParameter(API_PATH, apiPath)
-                .appendQueryParameter(API_KEY, apiKey)
-                .build();
+        Uri uri = Uri.parse(MOVIE_DB_BASE_URL + POPULAR_PARAM + API_PATH + API_KEY);/*Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
+                .appendPath(POPULAR_PARAM)
+                .appendEncodedPath(API_PATH)
+                .appendPath(API_KEY)
+                .build();*/
 
         URL url = null;
         try {

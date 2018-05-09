@@ -19,7 +19,7 @@ public class Movie {
         this.title = movieObject.getString("title");
         this.backdropPath = movieObject.getString("backdrop_path");
         this.overview = movieObject.getString("overview");
-        this.releaseDate = movieObject.getString("releaseDate");
+        this.releaseDate = movieObject.getString("release_date");
     }
 
     public static ArrayList<Movie> toMovie(ArrayList<JSONObject> movies) throws JSONException {

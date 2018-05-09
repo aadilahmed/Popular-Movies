@@ -1,14 +1,15 @@
 package com.example.android.popularmovies;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.example.android.popularmovies.model.Movie;
-import com.example.android.popularmovies.utils.JsonUtils;
 import com.example.android.popularmovies.utils.NetworkUtils;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
@@ -21,31 +22,52 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private ArrayList<JSONObject> movies = new ArrayList<>();
     private ArrayList<Movie> movieList = new ArrayList<>();
+    private ArrayList<String> imageList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.rv_movie_grid);
+        mRecyclerView = findViewById(R.id.rv_movie_grid);
 
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        URL url = NetworkUtils.buildURL();
+        new MovieQuerytTask().execute();
+    }
 
-        try {
-            String response = NetworkUtils.getResponseFromHttpUrl(url);
+    public class MovieQuerytTask extends AsyncTask<URL, Void, String> {
 
-            movies = JsonUtils.parseMovieJson(response);
+        @Override
+        protected String doInBackground(URL... urls) {
+            URL url = NetworkUtils.buildURL();
 
-            movieList = Movie.toMovie(movies);
+            try {
+                String response = NetworkUtils.getResponseFromHttpUrl(url);
 
-            mAdapter = new MovieAdapter(movieList);
-            mRecyclerView.setAdapter(mAdapter);
+                return response;
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
-        catch(Exception e) {
-            e.printStackTrace();
+
+        @Override
+        protected void onPostExecute(String s) {
+            //super.onPostExecute(s);
+
+            try {
+                movies = NetworkUtils.parseMovieJson(s);
+
+                movieList = Movie.toMovie(movies);
+
+                mAdapter = new MovieAdapter(movieList);
+                mRecyclerView.setAdapter(mAdapter);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
