@@ -16,16 +16,7 @@ import java.util.Scanner;
 
 public class NetworkUtils {
     private static final String MOVIE_DB_BASE_URL = "http://api.themoviedb.org/3/movie/";
-    private static final String POPULAR_PARAM = "popular";
-    private static final String RATING_PARAM = "rating";
-
-    private static final String MOVIE_POSTER_URL = "http://image.tmdb.org/t/p/";
-    private static final String POSTER_SIZE = "w185";
-
-    // PUT API KEY HERE
-    private static final String API_KEY = "";
-    private static final String API_PATH = "?api_key=";
-    private static final String equals = "=";
+    private static final String API_PATH = "api_key";
 
     public static ArrayList<JSONObject> parseMovieJson(String json) throws JSONException {
         JSONObject movieList = new JSONObject(json);
@@ -40,13 +31,12 @@ public class NetworkUtils {
         return movies;
     }
 
-    public static URL buildURL(){
+    public static URL buildURL(String SORT_PARAM, String API_KEY){
 
-        Uri uri = Uri.parse(MOVIE_DB_BASE_URL + POPULAR_PARAM + API_PATH + API_KEY);/*Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
-                .appendPath(POPULAR_PARAM)
-                .appendEncodedPath(API_PATH)
-                .appendPath(API_KEY)
-                .build();*/
+        Uri uri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
+                .appendPath(SORT_PARAM)
+                .appendQueryParameter(API_PATH, API_KEY)
+                .build();
 
         URL url = null;
         try {

@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utils.NetworkUtils;
@@ -17,12 +20,15 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Put API key here
+    private static final String API_KEY = "";
+    private String SORT_PARAM = "popular";
+
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private ArrayList<JSONObject> movies = new ArrayList<>();
     private ArrayList<Movie> movieList = new ArrayList<>();
-    private ArrayList<String> imageList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mRecyclerView = findViewById(R.id.rv_movie_grid);
+
+        mRecyclerView.setHasFixedSize(true);
 
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -41,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(URL... urls) {
-            URL url = NetworkUtils.buildURL();
+            URL url = NetworkUtils.buildURL(SORT_PARAM, API_KEY);
 
             try {
                 String response = NetworkUtils.getResponseFromHttpUrl(url);
@@ -56,8 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            //super.onPostExecute(s);
-
             try {
                 movies = NetworkUtils.parseMovieJson(s);
 
@@ -65,9 +71,31 @@ public class MainActivity extends AppCompatActivity {
 
                 mAdapter = new MovieAdapter(movieList);
                 mRecyclerView.setAdapter(mAdapter);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate(R.menu.sort_by, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == R.id.popular) {
+            SORT_PARAM = "popular";
+        }
+        if(item.getItemId() == R.id.top_rated) {
+            SORT_PARAM = "top_rated";
+        }
+
+        return true;
     }
 }
