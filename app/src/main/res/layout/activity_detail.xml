@@ -1,35 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DetailActivity"
     android:orientation="vertical">
-    
+
     <ImageView
         android:id="@+id/backdrop_iv"
         android:layout_width="match_parent"
         android:layout_height="231dp"
-        />
-    
-    <TextView
-        android:id="@+id/title_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:scaleType="fitXY"/>
 
     <TextView
-        android:id="@+id/plot_synopsis_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:id="@+id/title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/backdrop_iv"
+        android:gravity="center"
+        android:textSize="32sp"/>
 
     <TextView
         android:id="@+id/release_date_tv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/user_rating_tv"
+        android:layout_marginEnd="7dp" />
+
+    <TextView
+        android:id="@+id/plot_synopsis_tv"
+        style="@style/DetailTheme"
+        android:layout_width="377dp"
+        android:layout_height="179dp"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/title_tv" />
+
+    <ImageView
+        android:id="@+id/detail_poster_iv"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:layout_alignBottom="@+id/backdrop_iv"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="15dp"
+        android:background="@color/posterBackground"
+        android:padding="2dp" />
 
     <TextView
         android:id="@+id/user_rating_tv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/plot_synopsis_tv"
+        android:layout_centerVertical="true" />
 
-</LinearLayout>
+</RelativeLayout>
