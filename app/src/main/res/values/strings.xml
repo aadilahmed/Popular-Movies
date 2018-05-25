@@ -3,4 +3,5 @@
     <string name="sort_title">Sort By</string>
     <string name="popular_title">Popular</string>
     <string name="ratings_title">Top Rated</string>
+    <string name="release_date_title">Release Date:</string>
 </resources>

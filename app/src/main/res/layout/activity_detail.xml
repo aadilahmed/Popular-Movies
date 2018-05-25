@@ -1,58 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DetailActivity"
-    android:orientation="vertical">
-
-    <ImageView
-        android:id="@+id/backdrop_iv"
-        android:layout_width="match_parent"
-        android:layout_height="231dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:scaleType="fitXY"/>
-
-    <TextView
-        android:id="@+id/title_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/backdrop_iv"
-        android:gravity="center"
-        android:textSize="32sp"/>
-
-    <TextView
-        android:id="@+id/release_date_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignTop="@+id/user_rating_tv"
-        android:layout_marginEnd="7dp" />
+    tools:context=".DetailActivity">
 
     <TextView
         android:id="@+id/plot_synopsis_tv"
         style="@style/DetailTheme"
         android:layout_width="377dp"
         android:layout_height="179dp"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/title_tv" />
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/title_tv"
+        app:layout_constraintTop_toBottomOf="@+id/user_rating_tv" />
+
+    <ImageView
+        android:id="@+id/backdrop_iv"
+        android:layout_width="match_parent"
+        android:layout_height="231dp"
+        android:scaleType="fitXY"/>
+
+    <TextView
+        android:id="@+id/title_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textSize="32sp"
+        app:layout_constraintEnd_toEndOf="@+id/backdrop_iv"
+        app:layout_constraintStart_toStartOf="@+id/backdrop_iv"
+        app:layout_constraintTop_toBottomOf="@+id/backdrop_iv" />
+
+    <TextView
+        android:id="@+id/release_date_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="@+id/title_tv"
+        app:layout_constraintTop_toBottomOf="@+id/title_tv" />
 
     <ImageView
         android:id="@+id/detail_poster_iv"
         android:layout_width="100dp"
         android:layout_height="150dp"
-        android:layout_alignBottom="@+id/backdrop_iv"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
         android:background="@color/posterBackground"
-        android:padding="2dp" />
+        android:padding="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/backdrop_iv"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/ratingStar"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginTop="4dp"
+        android:src="@drawable/blue_star"
+        app:layout_constraintEnd_toStartOf="@+id/user_rating_tv"
+        app:layout_constraintTop_toTopOf="@+id/user_rating_tv" />
+
 
     <TextView
         android:id="@+id/user_rating_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignStart="@+id/plot_synopsis_tv"
-        android:layout_centerVertical="true" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="@+id/title_tv"
+        app:layout_constraintTop_toBottomOf="@+id/title_tv" />
 
-</RelativeLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="12dp"
+        android:text="@string/release_date_title"
+        app:layout_constraintEnd_toStartOf="@+id/release_date_tv"
+        app:layout_constraintTop_toBottomOf="@+id/title_tv" />
+
+</android.support.constraint.ConstraintLayout>
