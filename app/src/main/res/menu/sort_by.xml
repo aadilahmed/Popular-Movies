@@ -5,13 +5,20 @@
     tools:context=".MainActivity">
 
     <item
-        android:id="@+id/popular"
-        android:title="@string/popular_title"
-        app:showAsAction="never"
-        />
+        android:id="@+id/sort_menu"
+        android:title="@string/sort_title"
+        app:showAsAction="always">
 
-    <item
-        android:id="@+id/top_rated"
-        android:title="@string/ratings_title"
-        app:showAsAction="never"/>
+        <menu>
+            <item
+                android:id="@+id/popular"
+                android:title="@string/popular_title"
+                app:showAsAction="never" />
+
+            <item
+                android:id="@+id/top_rated"
+                android:title="@string/ratings_title"
+                app:showAsAction="never"/>
+        </menu>
+    </item>
 </menu>

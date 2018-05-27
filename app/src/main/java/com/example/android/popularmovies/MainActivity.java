@@ -42,10 +42,10 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        new MovieQuerytTask().execute();
+        new MovieQueryTask().execute();
     }
 
-    public class MovieQuerytTask extends AsyncTask<URL, Void, String> {
+    public class MovieQueryTask extends AsyncTask<URL, Void, String> {
 
         @Override
         protected String doInBackground(URL... urls) {
@@ -96,6 +96,24 @@ public class MainActivity extends AppCompatActivity {
             SORT_PARAM = "top_rated";
         }
 
+        new MovieQueryTask().execute();
+
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putString("sort", SORT_PARAM);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        SORT_PARAM = savedInstanceState.getString("sort");
+
+        new MovieQueryTask().execute();
     }
 }
