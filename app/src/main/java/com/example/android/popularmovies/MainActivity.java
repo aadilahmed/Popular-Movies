@@ -1,5 +1,7 @@
 package com.example.android.popularmovies;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utils.NetworkUtils;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     //Put API key here
     private static final String API_KEY = "";
     private String SORT_PARAM = "popular";
+    private static final String NO_CONNECTION_TOAST = "No network connectivity. Please connect to the internet.";
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -41,6 +45,12 @@ public class MainActivity extends AppCompatActivity {
 
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        if(!checkInternet()) {
+            Toast toast = Toast.makeText(getApplicationContext(), NO_CONNECTION_TOAST, Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
 
         new MovieQueryTask().execute();
     }
@@ -115,5 +125,15 @@ public class MainActivity extends AppCompatActivity {
         SORT_PARAM = savedInstanceState.getString("sort");
 
         new MovieQueryTask().execute();
+    }
+
+    /* Citation: https://stackoverflow.com/questions
+                 /1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out*/
+    public boolean checkInternet(){
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null &&
+                cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
 }
