@@ -10,9 +10,8 @@ import com.squareup.picasso.Picasso;
 
 
 public class DetailActivity extends AppCompatActivity {
-    private static final String backdropBase = "http://image.tmdb.org/t/p/original";
+    private static final String backdropBase = "http://image.tmdb.org/t/p/w1280";
     private static final String posterBase = "http://image.tmdb.org/t/p/w185";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

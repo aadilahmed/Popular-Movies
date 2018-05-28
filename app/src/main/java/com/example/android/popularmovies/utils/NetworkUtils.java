@@ -48,6 +48,8 @@ public class NetworkUtils {
         return url;
     }
 
+
+    /*Citation: Android Developer Nanodegree Course Lesson 2.9*/
     public static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
 
