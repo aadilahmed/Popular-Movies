@@ -24,7 +24,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     //Put API key here
-    private static final String API_KEY = "dde094fbaf46083db82d82fc0a574e41";
+    private static final String API_KEY = "";
     private String SORT_PARAM = "popular";
     private static final String NO_CONNECTION_TOAST = "No network connectivity. Please connect to the internet"
             + " and restart the app.";
