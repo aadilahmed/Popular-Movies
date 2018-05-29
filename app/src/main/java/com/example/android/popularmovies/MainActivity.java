@@ -47,12 +47,6 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        if(!checkInternet()) {
-            Toast toast = Toast.makeText(getApplicationContext(), NO_CONNECTION_TOAST, Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
-
         new MovieQueryTask().execute();
     }
 
@@ -61,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(URL... urls) {
             URL url = NetworkUtils.buildURL(SORT_PARAM, API_KEY);
+
+            if(!checkInternet()) {
+                cancel(true);
+            }
 
             try {
                 String response = NetworkUtils.getResponseFromHttpUrl(url);
@@ -86,6 +84,14 @@ public class MainActivity extends AppCompatActivity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+
+            Toast toast = Toast.makeText(getApplicationContext(), NO_CONNECTION_TOAST, Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 
@@ -124,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
 
         SORT_PARAM = savedInstanceState.getString("sort");
-
         new MovieQueryTask().execute();
     }
 
