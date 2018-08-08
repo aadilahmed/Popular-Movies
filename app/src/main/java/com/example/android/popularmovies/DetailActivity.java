@@ -23,7 +23,7 @@ import static com.example.android.popularmovies.utils.NetworkUtils.parseTrailerJ
 
 
 public class DetailActivity extends AppCompatActivity {
-    private static final String API_KEY = "dde094fbaf46083db82d82fc0a574e41";
+    private static final String API_KEY = "";
     private static final String backdropBase = "http://image.tmdb.org/t/p/w1280";
     private static final String posterBase = "http://image.tmdb.org/t/p/w185";
 
