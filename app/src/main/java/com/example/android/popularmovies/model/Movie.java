@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public class Movie implements Parcelable{
     private double voteAverage;
     private double popularity;
+    private int id;
     private String title;
     private String posterPath;
     private String backdropPath;
@@ -20,6 +21,7 @@ public class Movie implements Parcelable{
     public Movie(JSONObject movieObject) throws JSONException {
         this.voteAverage = movieObject.getDouble("vote_average");
         this.popularity = movieObject.getDouble("popularity");
+        this.id = movieObject.getInt("id");
         this.title = movieObject.getString("title");
         this.posterPath = movieObject.getString("poster_path");
         this.backdropPath = movieObject.getString("backdrop_path");
@@ -30,6 +32,7 @@ public class Movie implements Parcelable{
     protected Movie(Parcel in) {
         voteAverage = in.readDouble();
         popularity = in.readDouble();
+        id = in.readInt();
         title = in.readString();
         posterPath = in.readString();
         backdropPath = in.readString();
@@ -62,15 +65,22 @@ public class Movie implements Parcelable{
     public double getVoteAverage(){
         return voteAverage;
     }
-    public void setVoteAverage(int voteAverage) {
+    public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
     }
 
     public double getPopularity(){
         return popularity;
     }
-    public void setPopularity(int popularity) {
+    public void setPopularity(double popularity) {
         this.popularity = popularity;
+    }
+
+    public int getId(){
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getTitle(){
@@ -117,6 +127,7 @@ public class Movie implements Parcelable{
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(voteAverage);
         dest.writeDouble(popularity);
+        dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(posterPath);
         dest.writeString(backdropPath);

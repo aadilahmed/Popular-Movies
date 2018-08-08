@@ -31,10 +31,43 @@ public class NetworkUtils {
         return movies;
     }
 
+
+    public static ArrayList<JSONObject> parseTrailerJson(String json) throws JSONException {
+        JSONObject trailerList = new JSONObject(json);
+
+        JSONArray trailerDetailArray = trailerList.getJSONArray("results");
+        ArrayList<JSONObject> trailers = new ArrayList<>();
+
+        for(int i = 0; i < trailerDetailArray.length(); i++) {
+            trailers.add(trailerDetailArray.getJSONObject(i));
+        }
+
+        return trailers;
+    }
+
     public static URL buildURL(String SORT_PARAM, String API_KEY){
 
         Uri uri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendPath(SORT_PARAM)
+                .appendQueryParameter(API_PATH, API_KEY)
+                .build();
+
+        URL url = null;
+        try {
+            url = new URL(uri.toString());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return url;
+    }
+
+
+    public static URL buildTrailerURL(String MOVIE_ID, String VIDEO_PARAM, String API_KEY){
+
+        Uri uri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
+                .appendPath(MOVIE_ID)
+                .appendPath(VIDEO_PARAM)
                 .appendQueryParameter(API_PATH, API_KEY)
                 .build();
 

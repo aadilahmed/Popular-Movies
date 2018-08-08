@@ -8,4 +8,5 @@
     <color name="posterBackground">#E0E0E0</color>
 
     <color name="textColor">#EEEEEE</color>
+    <color name="white">#FFFFFF</color>
 </resources>
