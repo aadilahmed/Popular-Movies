@@ -63,7 +63,7 @@ public class NetworkUtils {
     }
 
 
-    public static URL buildTrailerURL(String MOVIE_ID, String VIDEO_PARAM, String API_KEY){
+    public static URL buildTrailerURL(String MOVIE_ID, String VIDEO_PARAM, String API_KEY) {
 
         Uri uri = Uri.parse(MOVIE_DB_BASE_URL).buildUpon()
                 .appendPath(MOVIE_ID)
