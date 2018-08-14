@@ -17,11 +17,13 @@ import java.util.ArrayList;
 
 public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHolder>{
     private ArrayList<String> trailerList;
+    private ArrayList<String> titleList;
     private Context context;
     private final static String trailerBase = "https://www.youtube.com/watch?v=";
 
-    public TrailerAdapter(ArrayList<String> mKeyList) {
+    public TrailerAdapter(ArrayList<String> mKeyList, ArrayList<String> mTitleList) {
         this.trailerList = mKeyList;
+        this.titleList = mTitleList;
     }
 
 
@@ -53,13 +55,17 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
         final String key = trailerList.get(position);
         String trailerPath = trailerBase + key;
 
+        final String trailerTitle = titleList.get(position);
+
         final Uri trailerLink = Uri.parse(trailerPath);
 
+        /*https://upload.wikimedia.org/wikipedia/commons/thumb/9/9c/TriangleArrow-White-Right.svg
+          /2000px-TriangleArrow-White-Right.svg.png*/
         Picasso.with(context)
                 .load(R.drawable.white_triangle)
                 .into(holder.imageView);
 
-        holder.textView.append(" " + Integer.toString(position + 1));
+        holder.textView.setText(trailerTitle);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

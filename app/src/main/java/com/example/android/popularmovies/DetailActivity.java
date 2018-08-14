@@ -32,8 +32,11 @@ public class DetailActivity extends AppCompatActivity {
 
     private ArrayList<JSONObject> trailers = new ArrayList<>();
     private ArrayList<String> youtubeKeys = new ArrayList<>();
+    private ArrayList<String> titles = new ArrayList<>();
     private ArrayList<JSONObject> reviews = new ArrayList<>();
     private ArrayList<String> reviewContent = new ArrayList<>();
+    private ArrayList<String> reviewURL = new ArrayList<>();
+    private ArrayList<String> authors = new ArrayList<>();
 
     private RecyclerView mTrailerRV;
     private RecyclerView mReviewRV;
@@ -127,9 +130,10 @@ public class DetailActivity extends AppCompatActivity {
 
                 for(int i = 0; i < trailers.size(); i++){
                     youtubeKeys.add(trailers.get(i).getString("key"));
+                    titles.add(trailers.get(i).getString("name"));
                 }
 
-                mTrailerAdapter = new TrailerAdapter(youtubeKeys);
+                mTrailerAdapter = new TrailerAdapter(youtubeKeys, titles);
                 mTrailerRV.setAdapter(mTrailerAdapter);
 
             } catch (JSONException e) {
@@ -161,9 +165,11 @@ public class DetailActivity extends AppCompatActivity {
 
                 for(int i = 0; i < reviews.size(); i++){
                     reviewContent.add(reviews.get(i).getString("content"));
+                    reviewURL.add(reviews.get(i).getString("url"));
+                    authors.add(reviews.get(i).getString("author"));
                 }
 
-                mReviewAdapter = new ReviewAdapter(reviewContent);
+                mReviewAdapter = new ReviewAdapter(reviewContent, reviewURL, authors);
                 mReviewRV.setAdapter(mReviewAdapter);
 
             } catch (JSONException e) {
