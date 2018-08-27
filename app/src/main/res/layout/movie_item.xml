@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/movie_poster_iv"
-    android:adjustViewBounds="true"
-    android:scaleType="centerCrop"
-    android:padding="2dp">
-</ImageView>
+    xmlns:app="http://schemas.android.com/apk/res-auto">-->
+
+    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_poster_iv"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:padding="2dp">
+    </ImageView>
+
+    <!--<Button
+        android:id="@+id/remove_favorite_button"
+        android:text="@string/remove_favorite_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/movie_poster_iv"
+        android:visibility="invisible"
+        />-->
+<!--</android.support.constraint.ConstraintLayout>-->

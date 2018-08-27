@@ -8,9 +8,3 @@
     android:ellipsize="end"
     android:maxLines="5"
     android:layout_margin="10dp"/>
-
-<!--
-    android:ellipsize="end"
-    android:inputType="none"
-    android:maxLines="4"
-    android:singleLine="false"-->

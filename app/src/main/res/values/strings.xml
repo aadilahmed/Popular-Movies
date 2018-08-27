@@ -3,8 +3,12 @@
     <string name="sort_title">Sort By</string>
     <string name="popular_title">Most Popular</string>
     <string name="ratings_title">Top Rated</string>
+    <string name="favorites_title">Favorites</string>
     <string name="release_date_title">Release Date:</string>
     <string name="trailer_title">Trailers:</string>
     <string name="trailer_item">Trailer</string>
     <string name="review_title">Reviews:</string>
+    <string name="favorite_text">Add to \nFavorites</string>
+    <string name="remove_favorite_text">Remove from \nFavorites</string>
+    <string name="already_favorited">Favorited</string>
 </resources>

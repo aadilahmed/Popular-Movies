@@ -5,10 +5,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewParent;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ToggleButton;
 
+import com.example.android.popularmovies.database.AppDatabase;
+import com.example.android.popularmovies.database.FavoriteEntry;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utils.NetworkUtils;
 import com.squareup.picasso.Picasso;
@@ -18,12 +27,13 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.example.android.popularmovies.utils.NetworkUtils.parseTrailerJson;
 
 
 public class DetailActivity extends AppCompatActivity {
-    private static final String API_KEY = "";
+    private static final String API_KEY = BuildConfig.APIKEY;
     private static final String backdropBase = "http://image.tmdb.org/t/p/w1280";
     private static final String posterBase = "http://image.tmdb.org/t/p/w185";
 
@@ -51,11 +61,18 @@ public class DetailActivity extends AppCompatActivity {
     private RecyclerView.ItemDecoration mTrailerDividerItemDecoration;
     private RecyclerView.ItemDecoration mReviewDividerItemDecoration;
 
+    private AppDatabase mDb;
+
+    private static final String LOG_TAG = DetailActivity.class.getSimpleName();
+
+    private Boolean movieIsFavorited = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
         ImageView backdropImage = findViewById(R.id.backdrop_iv);
         ImageView posterImage = findViewById(R.id.detail_poster_iv);
@@ -104,6 +121,36 @@ public class DetailActivity extends AppCompatActivity {
 
         new TrailerQueryTask().execute();
         new ReviewQueryTask().execute();
+
+        onFavoritesButtonClicked(movie);
+    }
+
+
+    public void onFavoritesButtonClicked(Movie movie) {
+        final Button button = findViewById(R.id.favorite_button);
+        final double voteAverage = movie.getVoteAverage();
+        final int tmdbId = movie.getId();
+        final String title = movie.getTitle();
+        final String posterPath = movie.getPosterPath();
+        final String backdropPath = movie.getBackdropPath();
+        final String overview = movie.getOverview();
+        final String releaseDate = movie.getReleaseDate();
+
+        button.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                    button.setText(R.string.already_favorited);
+                    movieIsFavorited = true;
+
+                    final FavoriteEntry favoriteEntry = new FavoriteEntry(tmdbId, voteAverage, title,
+                            posterPath, backdropPath, overview, releaseDate);
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            mDb.favoriteDao().insertFavorite(favoriteEntry);
+                        }
+                    });
+            }
+        });
     }
 
 

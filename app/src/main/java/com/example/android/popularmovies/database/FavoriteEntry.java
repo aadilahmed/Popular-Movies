@@ -8,40 +8,39 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "favorite")
 public class FavoriteEntry {
 
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int id;
+    @ColumnInfo(name = "vote_average")
+    private double voteAverage;
     private String title;
-    private String overview;
     @ColumnInfo(name = "poster_path")
     private String posterPath;
     @ColumnInfo(name = "backdrop_path")
     private String backdropPath;
+    private String overview;
     @ColumnInfo(name = "release_date")
     private String releaseDate;
-    @ColumnInfo(name = "vote_average")
-    private double voteAverage;
-    //private int movieID;
 
     @Ignore
-    public FavoriteEntry(String title, String overview, String posterPath, String backdropPath,
-                         String releaseDate, double voteAverage) {
+    public FavoriteEntry(double voteAverage, String title, String posterPath,
+                         String backdropPath, String overview, String releaseDate) {
+        this.voteAverage = voteAverage;
         this.title = title;
-        this.overview = overview;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
+        this.overview = overview;
         this.releaseDate = releaseDate;
-        this.voteAverage = voteAverage;
     }
 
-    public FavoriteEntry(int id, String title, String overview, String posterPath, String backdropPath,
-                         String releaseDate, double voteAverage) {
+    public FavoriteEntry(int id, double voteAverage, String title, String posterPath,
+                         String backdropPath, String overview, String releaseDate) {
         this.id = id;
+        this.voteAverage = voteAverage;
         this.title = title;
-        this.overview = overview;
         this.posterPath = posterPath;
         this.backdropPath = backdropPath;
+        this.overview = overview;
         this.releaseDate = releaseDate;
-        this.voteAverage = voteAverage;
     }
 
     public int getId(){
@@ -51,18 +50,18 @@ public class FavoriteEntry {
         this.id = id;
     }
 
+    public double getVoteAverage(){
+        return voteAverage;
+    }
+    public void setVoteAverage(double voteAverage) {
+        this.voteAverage = voteAverage;
+    }
+
     public String getTitle(){
         return title;
     }
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public String getOverview(){
-        return overview;
-    }
-    public void setOverview(String overview) {
-        this.overview = overview;
     }
 
     public String getPosterPath(){
@@ -79,17 +78,17 @@ public class FavoriteEntry {
         this.backdropPath = backdropPath;
     }
 
+    public String getOverview(){
+        return overview;
+    }
+    public void setOverview(String overview) {
+        this.overview = overview;
+    }
+
     public String getReleaseDate(){
         return releaseDate;
     }
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
-    }
-
-    public double getVoteAverage(){
-        return voteAverage;
-    }
-    public void setVoteAverage(double voteAverage) {
-        this.voteAverage = voteAverage;
     }
 }

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public class Movie implements Parcelable{
     private double voteAverage;
-    private double popularity;
     private int id;
     private String title;
     private String posterPath;
@@ -20,7 +19,6 @@ public class Movie implements Parcelable{
 
     public Movie(JSONObject movieObject) throws JSONException {
         this.voteAverage = movieObject.getDouble("vote_average");
-        this.popularity = movieObject.getDouble("popularity");
         this.id = movieObject.getInt("id");
         this.title = movieObject.getString("title");
         this.posterPath = movieObject.getString("poster_path");
@@ -29,9 +27,19 @@ public class Movie implements Parcelable{
         this.releaseDate = movieObject.getString("release_date");
     }
 
+    public Movie(double voteAverage, int tmdbId, String title, String posterPath,
+                 String backdropPath, String overview, String releaseDate) {
+        this.voteAverage = voteAverage;
+        this.id = tmdbId;
+        this.title = title;
+        this.posterPath = posterPath;
+        this.backdropPath = backdropPath;
+        this.overview = overview;
+        this.releaseDate = releaseDate;
+    }
+
     protected Movie(Parcel in) {
         voteAverage = in.readDouble();
-        popularity = in.readDouble();
         id = in.readInt();
         title = in.readString();
         posterPath = in.readString();
@@ -67,13 +75,6 @@ public class Movie implements Parcelable{
     }
     public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
-    }
-
-    public double getPopularity(){
-        return popularity;
-    }
-    public void setPopularity(double popularity) {
-        this.popularity = popularity;
     }
 
     public int getId(){
@@ -126,7 +127,6 @@ public class Movie implements Parcelable{
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeDouble(voteAverage);
-        dest.writeDouble(popularity);
         dest.writeInt(id);
         dest.writeString(title);
         dest.writeString(posterPath);

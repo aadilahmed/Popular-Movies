@@ -1,17 +1,27 @@
 package com.example.android.popularmovies;
 
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.android.popularmovies.database.AppDatabase;
+import com.example.android.popularmovies.database.FavoriteEntry;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utils.NetworkUtils;
 
@@ -20,11 +30,12 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     //Put API key here
-    private static final String API_KEY = "";
+    private static final String API_KEY = BuildConfig.APIKEY;
     private String SORT_PARAM = "popular";
     private static final String NO_CONNECTION_TOAST = "No network connectivity. Please connect to the internet"
             + " and restart the app.";
@@ -32,8 +43,13 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
+    private FavoriteAdapter fAdapter;
     private ArrayList<JSONObject> movies = new ArrayList<>();
     private ArrayList<Movie> movieList = new ArrayList<>();
+
+    private AppDatabase mDb;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mDb = AppDatabase.getInstance(getApplicationContext());
 
         new MovieQueryTask().execute();
     }
@@ -75,9 +93,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String s) {
             try {
                 movies = NetworkUtils.parseMovieJson(s);
-
                 movieList = Movie.toMovie(movies);
-
                 mAdapter = new MovieAdapter(movieList);
                 mRecyclerView.setAdapter(mAdapter);
 
@@ -106,14 +122,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.popular) {
-            SORT_PARAM = "popular";
+        switch(item.getItemId()){
+            case R.id.popular:
+                SORT_PARAM = "popular";
+                new MovieQueryTask().execute();
+                break;
+            case R.id.top_rated:
+                SORT_PARAM = "top_rated";
+                new MovieQueryTask().execute();
+                break;
+            case R.id.favorites:
+                setupViewModel();
+                onFavoriteSwiped();
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        if(item.getItemId() == R.id.top_rated) {
-            SORT_PARAM = "top_rated";
-        }
-
-        new MovieQueryTask().execute();
 
         return true;
     }
@@ -142,4 +166,58 @@ public class MainActivity extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null &&
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
     }
+
+    public void onFavoriteSwiped() {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView,
+                                  RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        int position = viewHolder.getAdapterPosition();
+                        List<FavoriteEntry> favorites = fAdapter.getFavorites();
+                        mDb.favoriteDao().deleteFavorite(favorites.get(position));
+                    }
+                });
+            }
+        }).attachToRecyclerView(mRecyclerView);
+    }
+
+    private void setupViewModel() {
+        MainViewModel viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getFavorites().observe(this, new Observer<List<FavoriteEntry>>() {
+            @Override
+            public void onChanged(@Nullable List<FavoriteEntry> favoriteEntries) {
+                Log.d(TAG, "Updating list of favorites from LiveData in ViewModel");
+                fAdapter = new FavoriteAdapter(favoriteEntries, mDb);
+                mRecyclerView.setAdapter(fAdapter);
+            }
+        });
+    }
+
+    /*
+    final FavoriteAdapter fAdapter
+    if(favoriteSort) {
+                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            final LiveData<List<FavoriteEntry>> favoriteEntryList = mDb.favoriteDao().loadAllFavorites();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    fAdapter = new FavoriteAdapter(favoriteEntryList, mDb);
+                                    mRecyclerView.setAdapter(fAdapter);
+                                    onFavoriteSwiped(fAdapter);
+                                }
+                            });
+                        }
+                    });
+                }*/
 }

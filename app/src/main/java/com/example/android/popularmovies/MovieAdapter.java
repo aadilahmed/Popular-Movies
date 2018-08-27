@@ -28,7 +28,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     public static class ViewHolder extends RecyclerView.ViewHolder{
         public ImageView imageView;
 
-        public ViewHolder(ImageView itemView) {
+        public ViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.movie_poster_iv);
         }
@@ -39,10 +39,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     @Override
     public MovieAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         context = parent.getContext();
-        ImageView image = (ImageView) LayoutInflater.from(context)
+        View view = LayoutInflater.from(context)
                 .inflate(R.layout.movie_item, parent, false);
 
-        return new MovieAdapter.ViewHolder(image);
+        return new MovieAdapter.ViewHolder(view);
     }
 
 
