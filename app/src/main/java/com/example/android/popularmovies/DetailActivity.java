@@ -1,20 +1,17 @@
 package com.example.android.popularmovies;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ToggleButton;
 
 import com.example.android.popularmovies.database.AppDatabase;
 import com.example.android.popularmovies.database.FavoriteEntry;
@@ -27,7 +24,6 @@ import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.example.android.popularmovies.utils.NetworkUtils.parseTrailerJson;
 
@@ -62,8 +58,6 @@ public class DetailActivity extends AppCompatActivity {
     private RecyclerView.ItemDecoration mReviewDividerItemDecoration;
 
     private AppDatabase mDb;
-
-    private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     private Boolean movieIsFavorited = false;
 
@@ -122,12 +116,18 @@ public class DetailActivity extends AppCompatActivity {
         new TrailerQueryTask().execute();
         new ReviewQueryTask().execute();
 
-        onFavoritesButtonClicked(movie);
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.pref_file_key),
+                Context.MODE_PRIVATE);
+        Boolean defaultVal = getResources().getBoolean(R.bool.isFavorited);
+        movieIsFavorited = sharedPref.getBoolean(getString(R.string.favorite_key), defaultVal);
+
+        Context context = this;
+        Button button = findViewById(R.id.favorite_button);
+        onFavoritesButtonClicked(movie, button);
     }
 
 
-    public void onFavoritesButtonClicked(Movie movie) {
-        final Button button = findViewById(R.id.favorite_button);
+    public void onFavoritesButtonClicked(Movie movie, final Button button) {
         final double voteAverage = movie.getVoteAverage();
         final int tmdbId = movie.getId();
         final String title = movie.getTitle();
@@ -136,23 +136,28 @@ public class DetailActivity extends AppCompatActivity {
         final String overview = movie.getOverview();
         final String releaseDate = movie.getReleaseDate();
 
+        if(movieIsFavorited) {
+            button.setText(R.string.already_favorited);
+        }
+        else{
+            button.setText(R.string.favorite_text);
+        }
+
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                    button.setText(R.string.already_favorited);
-                    movieIsFavorited = true;
+                button.setText(R.string.already_favorited);
 
-                    final FavoriteEntry favoriteEntry = new FavoriteEntry(tmdbId, voteAverage, title,
-                            posterPath, backdropPath, overview, releaseDate);
-                    AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDb.favoriteDao().insertFavorite(favoriteEntry);
-                        }
-                    });
+                final FavoriteEntry favoriteEntry = new FavoriteEntry(tmdbId, voteAverage, title,
+                        posterPath, backdropPath, overview, releaseDate);
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDb.favoriteDao().insertFavorite(favoriteEntry);
+                    }
+                });
             }
         });
     }
-
 
     public class TrailerQueryTask extends AsyncTask<URL, Void, String> {
         @Override
@@ -160,9 +165,7 @@ public class DetailActivity extends AppCompatActivity {
             URL url = NetworkUtils.buildTrailerURL(Integer.toString(movieId), VIDEO_PARAM, API_KEY);
 
             try {
-                String response = NetworkUtils.getResponseFromHttpUrl(url);
-
-                return response;
+                return NetworkUtils.getResponseFromHttpUrl(url);
             }
             catch(Exception e) {
                 e.printStackTrace();
@@ -180,6 +183,11 @@ public class DetailActivity extends AppCompatActivity {
                     titles.add(trailers.get(i).getString("name"));
                 }
 
+                if(youtubeKeys.isEmpty()) {
+                    youtubeKeys.add(getResources().getString(R.string.no_trailer_text));
+                    titles.add("");
+                }
+
                 mTrailerAdapter = new TrailerAdapter(youtubeKeys, titles);
                 mTrailerRV.setAdapter(mTrailerAdapter);
 
@@ -195,9 +203,7 @@ public class DetailActivity extends AppCompatActivity {
             URL url = NetworkUtils.buildTrailerURL(Integer.toString(movieId), REVIEW_PARAM, API_KEY);
 
             try {
-                String response = NetworkUtils.getResponseFromHttpUrl(url);
-
-                return response;
+                return NetworkUtils.getResponseFromHttpUrl(url);
             }
             catch(Exception e) {
                 e.printStackTrace();
@@ -214,6 +220,12 @@ public class DetailActivity extends AppCompatActivity {
                     reviewContent.add(reviews.get(i).getString("content"));
                     reviewURL.add(reviews.get(i).getString("url"));
                     authors.add(reviews.get(i).getString("author"));
+                }
+
+                if(reviewContent.isEmpty()) {
+                    reviewContent.add("");
+                    reviewURL.add("");
+                    authors.add(getResources().getString(R.string.no_review_text));
                 }
 
                 mReviewAdapter = new ReviewAdapter(reviewContent, reviewURL, authors);

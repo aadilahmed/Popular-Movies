@@ -1,35 +1,31 @@
 package com.example.android.popularmovies;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 
-import com.example.android.popularmovies.database.AppDatabase;
 import com.example.android.popularmovies.database.FavoriteEntry;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHolder> {
     private List<FavoriteEntry> favoriteEntryList;
     private Context context;
     private final static String imageBase = "http://image.tmdb.org/t/p/w185";
-    private AppDatabase mDb;
+    private final static String favoriteKey = "favoriteFlag";
+    private final static String prefFile = "preferenceFile";
+    private final static Boolean movieIsFavorited = true;
 
-    public FavoriteAdapter(List<FavoriteEntry> mFavoriteEntryList, AppDatabase mDb) {
+    public FavoriteAdapter(List<FavoriteEntry> mFavoriteEntryList) {
         this.favoriteEntryList = mFavoriteEntryList;
-        this.mDb = mDb;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
@@ -62,7 +58,6 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
         String overview = current.getOverview();
         String releaseDate = current.getReleaseDate();
 
-
         final Movie movie;
 
         movie = new Movie(voteAverage, id, title, posterPath, backdropPath, overview, releaseDate);
@@ -79,6 +74,11 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
                 context.startActivity(intent);
             }
         });
+
+        SharedPreferences sharedPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(favoriteKey, movieIsFavorited);
+        editor.apply();
     }
 
     @Override

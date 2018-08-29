@@ -53,7 +53,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ViewHolder
         final Uri reviewLink = Uri.parse(url);
 
         holder.textView.setText(author);
-        holder.textView.append("\n\n" + review + "...");
+        holder.textView.append("\n\n" + review);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

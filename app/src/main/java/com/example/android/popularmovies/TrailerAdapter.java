@@ -67,6 +67,10 @@ public class TrailerAdapter extends RecyclerView.Adapter<TrailerAdapter.ViewHold
 
         holder.textView.setText(trailerTitle);
 
+        if(trailerList.isEmpty()) {
+            holder.textView.setText("\n\nNo trailers available.");
+        }
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

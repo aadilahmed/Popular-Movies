@@ -2,6 +2,7 @@ package com.example.android.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +20,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     private ArrayList<Movie> moviesList;
     private Context context;
     private final static String imageBase = "http://image.tmdb.org/t/p/w185";
+    private final static String favoriteKey = "favoriteFlag";
+    private final static String prefFile = "preferenceFile";
+    private final static Boolean movieIsFavorited = false;
 
     public MovieAdapter(ArrayList<Movie> mMoviesList) {
         this.moviesList = mMoviesList;
@@ -64,6 +68,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
             }
         });
 
+        SharedPreferences sharedPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(favoriteKey, movieIsFavorited);
+        editor.apply();
     }
 
     @Override
