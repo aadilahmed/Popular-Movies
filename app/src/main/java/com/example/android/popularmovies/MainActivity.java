@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<JSONObject> movies = new ArrayList<>();
     private ArrayList<Movie> movieList = new ArrayList<>();
 
-    private AppDatabase mDb;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,15 +53,12 @@ public class MainActivity extends AppCompatActivity {
         mLayoutManager = new GridLayoutManager(this, 2);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mDb = AppDatabase.getInstance(getApplicationContext());
-
         if (savedInstanceState != null) {
             SORT_PARAM = savedInstanceState.getString("sort");
         }
 
         if(SORT_PARAM.equals("favorites")) {
             setupViewModel();
-            onFavoriteSwiped();
         }
         else {
             new MovieQueryTask().execute();
@@ -134,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.favorites:
                 SORT_PARAM = "favorites";
                 setupViewModel();
-                onFavoriteSwiped();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -159,29 +152,6 @@ public class MainActivity extends AppCompatActivity {
 
         return cm.getActiveNetworkInfo() != null &&
                 cm.getActiveNetworkInfo().isConnectedOrConnecting();
-    }
-
-    public void onFavoriteSwiped() {
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView,
-                                  RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int swipeDir) {
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        int position = viewHolder.getAdapterPosition();
-                        List<FavoriteEntry> favorites = fAdapter.getFavorites();
-                        mDb.favoriteDao().deleteFavorite(favorites.get(position));
-                    }
-                });
-            }
-        }).attachToRecyclerView(mRecyclerView);
     }
 
     private void setupViewModel() {

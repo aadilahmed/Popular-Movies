@@ -16,9 +16,6 @@ public interface FavoriteDao {
     @Query("SELECT * FROM favorite")
     LiveData<List<FavoriteEntry>> loadAllFavorites();
 
-    @Query("DELETE FROM favorite")
-    void deleteAll();
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertFavorite(FavoriteEntry favoriteEntry);
 
@@ -27,4 +24,7 @@ public interface FavoriteDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateFavorite(FavoriteEntry favoriteEntry);
+
+    @Query("SELECT * FROM favorite WHERE id = :id")
+    FavoriteEntry loadFavoriteById(int id);
 }

@@ -145,12 +145,13 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@+id/review_title_tv" />
 
-        <Button
+        <ToggleButton
             android:id="@+id/favorite_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="12sp"
-            android:text="@string/favorite_text"
+            android:textOff="@string/favorite_text"
+            android:textOn="@string/remove_favorite_text"
             app:layout_constraintBottom_toBottomOf="@id/backdrop_iv"
             />
     </android.support.constraint.ConstraintLayout>

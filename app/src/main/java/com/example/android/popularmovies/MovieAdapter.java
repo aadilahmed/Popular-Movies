@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.database.AppDatabase;
+import com.example.android.popularmovies.database.FavoriteEntry;
 import com.example.android.popularmovies.model.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -20,9 +22,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
     private ArrayList<Movie> moviesList;
     private Context context;
     private final static String imageBase = "http://image.tmdb.org/t/p/w185";
-    private final static String favoriteKey = "favoriteFlag";
-    private final static String prefFile = "preferenceFile";
-    private final static Boolean movieIsFavorited = false;
+    private AppDatabase mDb;
 
     public MovieAdapter(ArrayList<Movie> mMoviesList) {
         this.moviesList = mMoviesList;
@@ -52,7 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
 
 
     @Override
-    public void onBindViewHolder(@NonNull MovieAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MovieAdapter.ViewHolder holder, final int position) {
         final Movie movie = moviesList.get(position);
 
         String imagePath = imageBase + movie.getPosterPath();
@@ -68,10 +68,31 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder>{
             }
         });
 
-        SharedPreferences sharedPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(favoriteKey, movieIsFavorited);
-        editor.apply();
+
+        final String prefFile = context.getResources().getString(R.string.pref_file_key);
+        final String favoriteKey = context.getResources().getString(R.string.favorite_key);
+        final Boolean notFavorited = context.getResources().getBoolean(R.bool.notFavorited);
+        final Boolean isFavorited = context.getResources().getBoolean(R.bool.isFavorited);
+        mDb = AppDatabase.getInstance(context);
+
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                FavoriteEntry favoriteEntry = mDb.favoriteDao().loadFavoriteById(movie.getId());
+
+                SharedPreferences sharedPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+
+                if(favoriteEntry == null) {
+                    editor.putBoolean(favoriteKey + movie.getId(), notFavorited);
+                    editor.apply();
+                }
+                else {
+                    editor.putBoolean(favoriteKey + movie.getId(), isFavorited);
+                    editor.apply();
+                }
+            }
+        });
     }
 
     @Override

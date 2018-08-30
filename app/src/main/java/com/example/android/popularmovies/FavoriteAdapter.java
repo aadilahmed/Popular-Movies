@@ -20,9 +20,6 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
     private List<FavoriteEntry> favoriteEntryList;
     private Context context;
     private final static String imageBase = "http://image.tmdb.org/t/p/w185";
-    private final static String favoriteKey = "favoriteFlag";
-    private final static String prefFile = "preferenceFile";
-    private final static Boolean movieIsFavorited = true;
 
     public FavoriteAdapter(List<FavoriteEntry> mFavoriteEntryList) {
         this.favoriteEntryList = mFavoriteEntryList;
@@ -74,11 +71,6 @@ public class FavoriteAdapter extends RecyclerView.Adapter<FavoriteAdapter.ViewHo
                 context.startActivity(intent);
             }
         });
-
-        SharedPreferences sharedPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putBoolean(favoriteKey, movieIsFavorited);
-        editor.apply();
     }
 
     @Override

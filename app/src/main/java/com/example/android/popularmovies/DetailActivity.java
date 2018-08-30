@@ -1,5 +1,6 @@
 package com.example.android.popularmovies;
 
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -7,11 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.View;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
+import android.widget.ToggleButton;
 
 import com.example.android.popularmovies.database.AppDatabase;
 import com.example.android.popularmovies.database.FavoriteEntry;
@@ -59,7 +60,8 @@ public class DetailActivity extends AppCompatActivity {
 
     private AppDatabase mDb;
 
-    private Boolean movieIsFavorited = false;
+    private final static String prefFile = "preferenceFile";
+    private Boolean movieIsFavorited;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,16 +120,19 @@ public class DetailActivity extends AppCompatActivity {
 
         SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.pref_file_key),
                 Context.MODE_PRIVATE);
-        Boolean defaultVal = getResources().getBoolean(R.bool.isFavorited);
-        movieIsFavorited = sharedPref.getBoolean(getString(R.string.favorite_key), defaultVal);
+        Boolean defaultVal = getResources().getBoolean(R.bool.notFavorited);
+        movieIsFavorited = sharedPref.getBoolean(getString(R.string.favorite_key) + movieId, defaultVal);
 
         Context context = this;
-        Button button = findViewById(R.id.favorite_button);
-        onFavoritesButtonClicked(movie, button);
+        ToggleButton button = findViewById(R.id.favorite_button);
+
+        button.setChecked(movieIsFavorited);
+
+        onFavoritesButtonClicked(movie, context, button);
     }
 
 
-    public void onFavoritesButtonClicked(Movie movie, final Button button) {
+    public void onFavoritesButtonClicked(Movie movie, final Context context, final ToggleButton button) {
         final double voteAverage = movie.getVoteAverage();
         final int tmdbId = movie.getId();
         final String title = movie.getTitle();
@@ -136,26 +141,32 @@ public class DetailActivity extends AppCompatActivity {
         final String overview = movie.getOverview();
         final String releaseDate = movie.getReleaseDate();
 
-        if(movieIsFavorited) {
-            button.setText(R.string.already_favorited);
-        }
-        else{
-            button.setText(R.string.favorite_text);
-        }
-
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                button.setText(R.string.already_favorited);
-
-                final FavoriteEntry favoriteEntry = new FavoriteEntry(tmdbId, voteAverage, title,
-                        posterPath, backdropPath, overview, releaseDate);
-                AppExecutors.getInstance().diskIO().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        mDb.favoriteDao().insertFavorite(favoriteEntry);
+        button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if (isChecked) {
+                        final FavoriteEntry favoriteEntry = new FavoriteEntry(tmdbId, voteAverage, title,
+                                posterPath, backdropPath, overview, releaseDate);
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                mDb.favoriteDao().insertFavorite(favoriteEntry);
+                            }
+                        });
+                    } else {
+                        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                FavoriteEntry favoriteEntry = mDb.favoriteDao().loadFavoriteById(tmdbId);
+                                mDb.favoriteDao().deleteFavorite(favoriteEntry);
+                            }
+                        });
                     }
-                });
-            }
+
+                    SharedPreferences sharedPref = context.getSharedPreferences(prefFile, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putBoolean(getString(R.string.favorite_key) + tmdbId, isChecked);
+                    editor.apply();
+                }
         });
     }
 
