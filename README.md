@@ -1,4 +1,4 @@
-# Popular-Movies
+# Popular Movies
 App that allows users to look up trailers and reviews for the most popular and highest rated movies, and add them to a favorites list. 
 
 ## Screenshots
