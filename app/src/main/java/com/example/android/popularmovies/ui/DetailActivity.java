@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.ui;
 
 
 import android.content.Context;
@@ -14,11 +14,14 @@ import android.widget.TextView;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
+import com.example.android.popularmovies.database.AppExecutors;
+import com.example.android.popularmovies.BuildConfig;
+import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.database.AppDatabase;
 import com.example.android.popularmovies.database.FavoriteEntry;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utils.NetworkUtils;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -106,14 +109,14 @@ public class DetailActivity extends AppCompatActivity {
                 DividerItemDecoration.VERTICAL);
         mReviewRV.addItemDecoration(mReviewDividerItemDecoration);
 
-        Picasso.with(this).load(imagePath).into(backdropImage);
+        Glide.with(this).load(imagePath).into(backdropImage);
 
         titleTv.setText(movie.getTitle());
         plotSynopsisTv.setText(movie.getOverview());
         releaseDateTv.setText(movie.getReleaseDate());
         userRatingTv.setText(Double.toString(movie.getVoteAverage()));
 
-        Picasso.with(this).load(posterPath).into(posterImage);
+        Glide.with(this).load(posterPath).into(posterImage);
 
         new TrailerQueryTask().execute();
         new ReviewQueryTask().execute();

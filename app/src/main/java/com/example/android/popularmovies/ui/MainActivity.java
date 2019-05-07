@@ -1,4 +1,4 @@
-package com.example.android.popularmovies;
+package com.example.android.popularmovies.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -15,7 +15,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.android.popularmovies.database.AppDatabase;
+import com.example.android.popularmovies.BuildConfig;
+import com.example.android.popularmovies.database.MainViewModel;
+import com.example.android.popularmovies.R;
 import com.example.android.popularmovies.database.FavoriteEntry;
 import com.example.android.popularmovies.model.Movie;
 import com.example.android.popularmovies.utils.NetworkUtils;
